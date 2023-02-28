@@ -3,28 +3,33 @@ const HttpError = require('../models/http-error');
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 
-const DUMMY_USERS = [
-  {
-    id: 'u1',
-    name: 'Vasya Pupkin',
-    email: 'vasyapupkin@test.com',
-    password: 'testtest',
-  },
-];
+const getUsers = async (req, res, next) => {
+let users;
+try {
+    users = await User.find({}, '-password').exec();
+  } catch (err) {
+    const error = new HttpError(
+      'Signing up failed, please try again later',
+      500
+    );
+    return next(error);
+  }
 
-const getUsers = (req, res, next) => {
-  res.json({ users: DUMMY_USERS });
+  res.json({ users })
+
+
 };
 
 const signUp = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-     return next(new HttpError('Invalid inputs passed, please check your data', 422));
-    }
-  
+    return next(
+      new HttpError('Invalid inputs passed, please check your data', 422)
+    );
+  }
 
   const { name, email, password, places } = req.body;
-  let existingUser
+  let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
@@ -61,14 +66,19 @@ const signUp = async (req, res, next) => {
   res.status(201).json({ createdUser });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const identifiedUser = DUMMY_USERS.find((u) => u.email === email);
-  if (!identifiedUser || identifiedUser.password !== password) {
-    throw new HttpError(
-      'Could not identify user, credential seem to be wrong',
-      401
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (err) {
+    const error = new HttpError('Login failed, please try again later', 500);
+    return next(error);
+  }
+
+  if (!existingUser || existingUser.password !== password) {
+    return next(
+      new HttpError('Could not identify user, credential seem to be wrong', 401)
     );
   }
   res.json({ message: 'Logged In' });
