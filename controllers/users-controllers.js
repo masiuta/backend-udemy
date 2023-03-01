@@ -1,11 +1,10 @@
-const uuid = require('uuid').v4;
 const HttpError = require('../models/http-error');
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 
 const getUsers = async (req, res, next) => {
-let users;
-try {
+  let users;
+  try {
     users = await User.find({}, '-password').exec();
   } catch (err) {
     const error = new HttpError(
@@ -15,9 +14,7 @@ try {
     return next(error);
   }
 
-  res.json({ users })
-
-
+  res.json({ users });
 };
 
 const signUp = async (req, res, next) => {
@@ -28,7 +25,7 @@ const signUp = async (req, res, next) => {
     );
   }
 
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -53,7 +50,7 @@ const signUp = async (req, res, next) => {
     email,
     image: 'https://miro.medium.com/v2/resize:fit:1400/0*CF_7x63JCB0928U9',
     password,
-    places,
+    places: [],
   });
 
   try {

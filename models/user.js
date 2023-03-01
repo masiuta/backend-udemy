@@ -7,7 +7,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, index: true },
   password: { type: String, required: true, minlength: 8 },
   image: { type: String, required: true },
-  places: { type: String, required: true },
+  places:  [{ type: mongoose.Types.ObjectId, required: true, ref: 'Place'}]
 });
 
 userSchema.set('toJSON', { getters: true });

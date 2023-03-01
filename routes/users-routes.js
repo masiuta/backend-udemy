@@ -12,7 +12,9 @@ router.post(
   [
     check('name').not().isEmpty(),
     check('email').normalizeEmail().isEmail(),
-    check('password').isLength({ min: 8 }).withMessage('must be at least 8 chars long'),
+    check('password')
+      .isLength({ min: 8 })
+      .withMessage('must be at least 8 chars long'),
   ],
   usersControllers.signUp
 );
