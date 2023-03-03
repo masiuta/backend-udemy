@@ -78,7 +78,7 @@ const login = async (req, res, next) => {
       new HttpError('Could not identify user, credential seem to be wrong', 401)
     );
   }
-  res.json({ message: 'Logged In' });
+  res.json({ message: 'Logged In', user: existingUser });
 };
 
 exports.signUp = signUp;
