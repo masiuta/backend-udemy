@@ -20,6 +20,7 @@ const getUsers = async (req, res, next) => {
 const signUp = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+
     return next(
       new HttpError('Invalid inputs passed, please check your data', 422)
     );
@@ -48,7 +49,7 @@ const signUp = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image: 'https://miro.medium.com/v2/resize:fit:1400/0*CF_7x63JCB0928U9',
+    image: req.file.path,
     password,
     places: [],
   });
@@ -78,7 +79,7 @@ const login = async (req, res, next) => {
       new HttpError('Could not identify user, credential seem to be wrong', 401)
     );
   }
-  res.json({ message: 'Logged In', user: existingUser });
+  res.json({ message: 'Logged In', user:existingUser });
 };
 
 exports.signUp = signUp;
