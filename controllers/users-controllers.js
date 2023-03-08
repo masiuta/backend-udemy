@@ -61,11 +61,12 @@ const signUp = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(201).json({ createdUser });
+  res.status(201).json({ user: createdUser });
 };
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
+  let existingUser;
 
   try {
     existingUser = await User.findOne({ email: email });
