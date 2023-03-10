@@ -136,7 +136,7 @@ const login = async (req, res, next) => {
     return next(new HttpError('Login failed, please try again later', 500));
   }
 
-  res.json({ userId: createdUser.id, email: createdUser.email, token: token });
+  res.json({ userId: existingUser.id, email: existingUser.email, token: token });
 };
 
 exports.signUp = signUp;
