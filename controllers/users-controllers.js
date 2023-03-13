@@ -55,10 +55,19 @@ const signUp = async (req, res, next) => {
     return next(new HttpError('Could not create user, please try again', 500));
   }
 
+  let imageUrl;
+  if (req.file) {
+    imageUrl = req.file.path;
+  } else {
+    return next(
+      new HttpError('Invalid inputs passed, please check your data', 422)
+    );
+  }
+
   const createdUser = new User({
     name,
     email,
-    image: req.file.path,
+    image: imageUrl,
     password: hashedPassword,
     places: [],
   });

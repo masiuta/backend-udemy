@@ -74,12 +74,22 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
+  let imageUrl;
+  if (req.file) {
+    imageUrl = req.file.path;
+  } else {
+    return next(
+      new HttpError('Invalid inputs passed, please check your data', 422)
+    );
+  }
+
+
   const createdPlace = new Place({
     title,
     description,
     address,
     location: coordinates,
-    image: req.file.path,
+    image: imageUrl,
     creator: req.userData.userId,
   });
 
